@@ -1,6 +1,6 @@
 {
-  "name": "panwiki",
-  "description": "frontend for personal wiki built from markdown in git",
+  "name": "jitit",
+  "description": "frontend for personal wiki built from markdown in git (like gitit)",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
@@ -18,5 +18,5 @@
     "start": "node app.js"
   },
   "author": "Max F. Albrecht",
-  "homepage": "github.com/eins78/panwiki"
+  "homepage": "github.com/eins78/jitit"
 }
