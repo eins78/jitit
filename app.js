@@ -22,6 +22,9 @@ app.use(require("./lib/cache"), { "cache-html": false } );
 // use github module
 app.use(require("./lib/github"));
 
+// use helpers module
+app.use(require("./lib/helpers"));
+
 
 
 // HTTP //////////////////////////////////////////////
@@ -33,7 +36,7 @@ app.router.get('/', function () {
 
 // "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
-  var http = this,
+  var self = this,
       conf;
   
   // for when not hard-coded    
@@ -50,14 +53,13 @@ app.router.get('/wiki', function(user, repo) {
     
     if (err) {
       
-      http.res.writeHead(404, 'Not found')
-      http.res.json(err);
+      app.send(err, null, self);
       
     } else {
                 
       app.txt(result, 'markdown', 'html', function(err, output) {
            
-        http.res.html(output);
+        app.send(err, output, self);
       
       });
     
@@ -69,7 +71,7 @@ app.router.get('/wiki', function(user, repo) {
 
 // "/wiki/$PAGE" shows a rendered wiki page
 app.router.get('/wiki/:page', function (page) {
-  var http = this,
+  var self = this,
       conf ;
   
   pagefile = path.join('.', 'content', page + ".markdown");
@@ -88,14 +90,13 @@ app.router.get('/wiki/:page', function (page) {
     
     if (err) {
       
-      http.res.writeHead(404, 'Not found')
-      http.res.json(err);
+      app.send(err, null, self);
       
     } else {
                 
       app.txt(result, 'markdown', 'html', function(err, output) {
            
-        http.res.html(output);
+        app.send(err, output, self);
       
       });
     
