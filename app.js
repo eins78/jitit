@@ -25,7 +25,7 @@ app.router.get('/', function () {
 txt = function(file, from, to, callback) {
   fs.readFile(file, 'utf8', function (err, data) {
     if (err) {
-      http.res.json(err);     
+      callback(err);     
     } else {
       // console.log(data.toString());
       pandoc(data, 'markdown', 'html', callback);  
@@ -51,26 +51,25 @@ app.router.get('/wiki/:page', function(page) {
   
 });
 
-app.router.get('/github/:user/:repo/', function(user, repo) {
+app.router.get('/wiki', function(user, repo) {
   var http = this,
-      conf = {};
+      conf;
   
-  conf.repo = "https://github.com/" + user + repo + ".git";
-  conf.path = path.join('.', 'tmp', 'gh', user, repo);
-    
-  github.repos.getReadme({
-      user: "eins78",
-      repo: "txt.178.is",
-  }, function(err, res) {
+  // for when not hard-coded    
+  // conf = { "user": user, "repo": repo };
+  
+  // hardcoded
+  conf = { "user": "eins78", "repo": "txt.178.is" };
+  
+  github.repos.getReadme(conf, function(err, res) {
       var source = new Buffer(res.content, 'base64').toString('utf8');
-      console.log(source);
-      
-      txt(source, 'markdown', 'html', function(err, res) {        
+            
+      pandoc(source, 'markdown', 'html', function(err, res) {        
         http.res.html(res);      
       });
       
   });
-    
+  
 });
 
 
