@@ -33,24 +33,7 @@ txt = function(file, from, to, callback) {
   });  
 };
 
-app.router.get('/wiki/:page', function(page) {
-  var http = this,
-      pagefile;
-  
-  pagefile = path.join('.', 'content', page + ".markdown");
-  
-  txt(pagefile, 'markdown', 'html', function (err, result) {
-    if (err) {
-      http.res.json(err);
-    } else {
-      // console.log(result);
-      http.res.writeHead(200, { 'Content-Type': 'text/html' });
-      http.res.end(result);
-    }  
-  });
-  
-});
-
+// "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
   var http = this,
       conf;
@@ -62,17 +45,46 @@ app.router.get('/wiki', function(user, repo) {
   conf = { "user": "eins78", "repo": "txt.178.is" };
   
   github.repos.getReadme(conf, function(err, res) {
-      var source = new Buffer(res.content, 'base64').toString('utf8');
+    var source = new Buffer(res.content, 'base64').toString('utf8');
             
-      pandoc(source, 'markdown', 'html', function(err, res) {        
-        http.res.html(res);      
-      });
+    pandoc(source, 'markdown', 'html', function(err, res) {        
+      http.res.html(res);      
+    });
       
   });
   
 });
 
+// "/wiki/$PAGE" shows a rendered wiki page
+app.router.get('/wiki/:page', function (page) {
+  var http = this,
+      conf ;
+  
+  pagefile = path.join('.', 'content', page + ".markdown");
+  
+  // for when not hard-coded    
+  // conf = { "user": user, "repo": repo };
+  
+  // hardcoded
+  conf = { 
+    "user": "eins78",
+    "repo": "txt.178.is",
+    "path": page + ".page"
+  };
+  
+  github.repos.getContent(conf, function(err, result) {
+    
+    var source = new Buffer(result.content, 'base64').toString('utf8');
+            
+    pandoc(source, 'markdown', 'html', function(err, output) {        
+      http.res.html(output);      
+    });
+      
+  });
+  
+});
 
+// start the app
 app.start(3000);
 
 
@@ -80,7 +92,8 @@ app.start(3000);
 (function infopage (data) {
   data = {
     "title": "panwiki",
-    "hello-msg": "oh hai!"
+    "hello-msg": "oh hai!",
+    "hello-txt": "Try to: \n\n- `GET` [`/wiki`](/wiki)\n- `GET` [`/wiki/ARCH`](/wiki/ARCH)"
   };
   
   cache.infopage = {};
@@ -88,6 +101,7 @@ app.start(3000);
   cache.infopage.txt = cache.infopage.txt + "\n";
   cache.infopage.txt = cache.infopage.txt + data['hello-msg'] + "\n";
   cache.infopage.txt = cache.infopage.txt + "\n";
+  cache.infopage.txt = cache.infopage.txt + data['hello-txt'] + "\n\n";
 
   // get the pandoc version info
   pandoc(null, null, null, [ '-v' ], function(err, result) {
