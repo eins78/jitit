@@ -1,0 +1,22 @@
+{
+  "name": "panwiki",
+  "description": "frontend for personal wiki built from markdown in git",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "union": "0.3.5",
+    "flatiron": "0.3.3",
+		"github": "0.1.x",
+    "pdc": "0.1.x"
+  },
+  "devDependencies": {
+    "api-easy": "0.3.2",
+    "vows": "0.6.x"
+  },
+  "scripts": {
+    "test": "vows --spec",
+    "start": "node app.js"
+  },
+  "author": "Max F. Albrecht",
+  "homepage": "github.com/eins78/panwiki"
+}
