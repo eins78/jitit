@@ -40,15 +40,29 @@ app.router.get('/wiki', function(user, repo) {
   // conf = { "user": user, "repo": repo };
   
   // hardcoded
-  conf = { "user": "eins78", "repo": "txt.178.is" };
+  conf = { 
+    "user": "eins78",
+    "repo": "txt.178.is",
+    "readme": true
+  };
   
-  github.repos.getReadme(conf, function(err, res) {
-    var source = new Buffer(res.content, 'base64').toString('utf8');
-            
-    app.txt(source, 'markdown', 'html', function(err, res) {        
-      http.res.html(res);      
-    });
+  app.github.fetch(conf, function(err, result) {
+    
+    if (err) {
       
+      http.res.writeHead(404, 'Not found')
+      http.res.json(err);
+      
+    } else {
+                
+      app.txt(result, 'markdown', 'html', function(err, output) {
+           
+        http.res.html(output);
+      
+      });
+    
+    }
+    
   });
   
 });
@@ -71,13 +85,22 @@ app.router.get('/wiki/:page', function (page) {
   };
   
   app.github.fetch(conf, function(err, result) {
+    
+    if (err) {
+      
+      http.res.writeHead(404, 'Not found')
+      http.res.json(err);
+      
+    } else {
                 
-    app.txt(result, 'markdown', 'html', function(err, output) {
+      app.txt(result, 'markdown', 'html', function(err, output) {
            
-      http.res.html(output);
+        http.res.html(output);
       
-    });
-      
+      });
+    
+    }
+    
   });
   
 });
