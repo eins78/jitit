@@ -98,5 +98,41 @@ app.router.get('/wiki/:page', function (page) {
   
 });
 
+// "/wiki/$PAGE/$format" returns a rendered wiki page
+app.router.get('/wiki/:page/export', function (page) {
+  var self = this,
+      conf ;
+    
+  console.log("export!");
+  
+  // hardcoded
+  conf = { 
+    "user": "eins78",
+    "repo": "txt.178.is",
+    "path": page + ".page"
+  };
+  
+  var format = self.req.query.format || 'html';
+  
+  app.github.fetch(conf, function(err, result) {
+    
+    if (err) {
+      
+      app.send(err, null, self);
+      
+    } else {
+                
+      app.txt(result, 'markdown', format, function(err, output) {
+        console.log(err); 
+        app.send(err || null, output, self);
+      
+      });
+    
+    }
+    
+  });
+  
+});
+
 // start the app
 app.start(3000);
