@@ -19,6 +19,9 @@ app.use(require("./lib/txt"));
 // use simple cache module
 app.use(require("./lib/cache"), { "cache-html": false } );
 
+// use github module
+app.use(require("./lib/github"));
+
 
 
 // HTTP //////////////////////////////////////////////
@@ -67,12 +70,12 @@ app.router.get('/wiki/:page', function (page) {
     "path": page + ".page"
   };
   
-  github.repos.getContent(conf, function(err, result) {
-    
-    var source = new Buffer(result.content, 'base64').toString('utf8');
-            
-    app.txt(source, 'markdown', 'html', function(err, output) {        
-      http.res.html(output);      
+  app.github.fetch(conf, function(err, result) {
+                
+    app.txt(result, 'markdown', 'html', function(err, output) {
+           
+      http.res.html(output);
+      
     });
       
   });
