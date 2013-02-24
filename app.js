@@ -106,5 +106,72 @@ app.router.get('/wiki/:page', function (page) {
   
 });
 
+// test a public service
+// "/github/$user/$repo/$PAGE" shows a rendered wiki page
+app.router.get('/github/:user/:repo/:page', function (user, repo, page) {
+  var self = this,
+      conf ;
+  
+  pagefile = path.join('.', 'content', page + ".markdown");
+  
+  // for when not hard-coded    
+
+  conf = { 
+    "user": user,
+    "repo": repo,
+    "path": page + ".page"
+  };
+  
+  app.github.fetch(conf, function(err, result) {
+    
+    if (err) {
+      
+      app.send(err, null, self);
+      
+    } else {
+                
+      app.txt(result, 'markdown', 'html', function(err, output) {
+        
+        app.send(err, output, self);
+              
+      });
+    
+    }
+    
+  });
+  
+});
+
+// "/github/$user/$repo" shows the rendered readme
+app.router.get('/github/:user/:repo', function(user, repo) {
+  var self = this,
+      conf = { 
+        "user": user,
+        "repo": repo,
+        "readme": true
+      };
+  
+  app.github.fetch(conf, function(err, result) {
+    
+    if (err) {
+      
+      app.send(err, null, self);
+      
+    } else {
+                
+      app.txt(result, 'markdown', 'html', function(err, output) {
+        
+        app.send(err, output, self);
+        
+      });
+    
+    }
+    
+  });
+  
+});
+
+
+
 // start the app
 app.start(3000);
