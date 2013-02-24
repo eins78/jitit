@@ -13,12 +13,19 @@ var path      = require('path'),
         timeout: 5000
     });
 
+// APP CONF + PLUGINS
 app.config.file({ file: path.join(__dirname, 'config', 'config.json') });
 
+// Passes the second argument to `helloworld.attach`.
+app.use(require("./lib/cache"), { "cache-html": false } );
+
+
+
+// HTTP //////////////////////////////////////////////
 app.use(flatiron.plugins.http);
 
 app.router.get('/', function () {
-  this.res.html(cache.infopage.html)
+  this.res.html(app.cache.infopage.html)
 });
 
 txt = function(file, from, to, callback) {
@@ -85,30 +92,3 @@ app.router.get('/wiki/:page', function (page) {
 
 // start the app
 app.start(3000);
-
-
-// build the home/info page (done once at startup)
-(function infopage (data) {
-  data = {
-    "title": "jitit",
-    "hello-msg": "oh hai!",
-    "hello-txt": "Try to: \n\n- `GET` [`/wiki`](/wiki)\n- `GET` [`/wiki/ARCH`](/wiki/ARCH)"
-  };
-  
-  cache.infopage = {};
-  cache.infopage.txt = "# " + data.title + "\n";
-  cache.infopage.txt = cache.infopage.txt + "\n";
-  cache.infopage.txt = cache.infopage.txt + data['hello-msg'] + "\n";
-  cache.infopage.txt = cache.infopage.txt + "\n";
-  cache.infopage.txt = cache.infopage.txt + data['hello-txt'] + "\n\n";
-
-  // get the pandoc version info
-  pandoc(null, null, null, [ '-v' ], function(err, result) {
-    cache.infopage.txt = cache.infopage.txt + "### `Pandoc` version info:\n";
-    cache.infopage.txt = cache.infopage.txt + "```shell\n" + result + "\n```\n";
-    
-    pandoc(cache.infopage.txt, 'markdown', 'html', function(err, result) {
-      cache.infopage.html = result;
-    });
-  });
-})();
