@@ -39,9 +39,6 @@ app.router.get('/wiki', function(user, repo) {
   var self = this,
       conf;
   
-  // for when not hard-coded    
-  // conf = { "user": user, "repo": repo };
-  
   // hardcoded
   conf = { 
     "user": "eins78",
@@ -73,11 +70,6 @@ app.router.get('/wiki', function(user, repo) {
 app.router.get('/wiki/:page', function (page) {
   var self = this,
       conf ;
-  
-  pagefile = path.join('.', 'content', page + ".markdown");
-  
-  // for when not hard-coded    
-  // conf = { "user": user, "repo": repo };
   
   // hardcoded
   conf = { 
