@@ -3,9 +3,6 @@ var path      = require('path'),
     flatiron  = require('flatiron'),
     app       = flatiron.app,
     GitHubApi = require('github'),
-    pandoc    = require('pdc'),
-    txt,
-    cache     = {},
     github = new GitHubApi({
         // required
         version: "3.0.0",
@@ -16,7 +13,10 @@ var path      = require('path'),
 // APP CONF + PLUGINS
 app.config.file({ file: path.join(__dirname, 'config', 'config.json') });
 
-// Passes the second argument to `helloworld.attach`.
+// use txt module first
+app.use(require("./lib/txt"));
+
+// use simple cache module
 app.use(require("./lib/cache"), { "cache-html": false } );
 
 
@@ -27,17 +27,6 @@ app.use(flatiron.plugins.http);
 app.router.get('/', function () {
   this.res.html(app.cache.infopage.html)
 });
-
-txt = function(file, from, to, callback) {
-  fs.readFile(file, 'utf8', function (err, data) {
-    if (err) {
-      callback(err);     
-    } else {
-      // console.log(data.toString());
-      pandoc(data, 'markdown', 'html', callback);  
-    }
-  });  
-};
 
 // "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
@@ -53,7 +42,7 @@ app.router.get('/wiki', function(user, repo) {
   github.repos.getReadme(conf, function(err, res) {
     var source = new Buffer(res.content, 'base64').toString('utf8');
             
-    pandoc(source, 'markdown', 'html', function(err, res) {        
+    app.txt(source, 'markdown', 'html', function(err, res) {        
       http.res.html(res);      
     });
       
@@ -82,7 +71,7 @@ app.router.get('/wiki/:page', function (page) {
     
     var source = new Buffer(result.content, 'base64').toString('utf8');
             
-    pandoc(source, 'markdown', 'html', function(err, output) {        
+    app.txt(source, 'markdown', 'html', function(err, output) {        
       http.res.html(output);      
     });
       
