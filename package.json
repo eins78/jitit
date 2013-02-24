@@ -6,7 +6,7 @@
   "dependencies": {
     "union": "0.3.5",
     "flatiron": "0.3.3",
-		"github": "0.1.x",
+    "github": "0.1.x",
     "pdc": "0.1.x"
   },
   "devDependencies": {
@@ -17,6 +17,10 @@
     "test": "vows --spec",
     "start": "node app.js"
   },
+  "engines": {
+    "node": ">=0.8"
+  },
   "author": "Max F. Albrecht",
-  "homepage": "github.com/eins78/jitit"
+  "homepage": "github.com/eins78/jitit",
+  "subdomain": "jitit"
 }
