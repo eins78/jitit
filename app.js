@@ -3,7 +3,6 @@ var path      = require('path'),
     flatiron  = require('flatiron'),
     app       = flatiron.app,
     GitHubApi = require('github'),
-    request   = require('request'),
     pandoc    = require('pdc'),
     txt,
     cache     = {},
@@ -91,7 +90,7 @@ app.start(3000);
 // build the home/info page (done once at startup)
 (function infopage (data) {
   data = {
-    "title": "panwiki",
+    "title": "jitit",
     "hello-msg": "oh hai!",
     "hello-txt": "Try to: \n\n- `GET` [`/wiki`](/wiki)\n- `GET` [`/wiki/ARCH`](/wiki/ARCH)"
   };
