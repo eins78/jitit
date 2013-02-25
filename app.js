@@ -28,7 +28,7 @@ app.router.get('/', function () {
   
   app.cache.get("infopage", function(info) {
     require('eyes').inspect(info);
-    http.res.html(info.html)    
+    http.res.html(info.html);   
   });
 });
 
