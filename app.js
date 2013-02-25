@@ -61,7 +61,7 @@ app.router.get('/wiki', function(user, repo) {
 app.router.get('/wiki/:page', function (page) {
 
   // hardcoded
-  app.getHub("eins78", "txt.178.is", page + ".page", this);
+  app.getHub("eins78", "txt.178.is", page, this);
   
 });
 
