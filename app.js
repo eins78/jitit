@@ -72,3 +72,6 @@ app.router.get('/github/:user/:repo/:page', function (user, repo, page) {
 
 // start the app
 app.start(3000);
+
+// fill the infopage cache once on startup
+app.cache.infopage(null);
