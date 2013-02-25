@@ -33,8 +33,8 @@ app.router.get('/', function () {
 
 // ROUTES ////////////////////////////////////////////
 
-// "/wiki" shows the rendered readme
-app.router.get('/wiki', function(user, repo) {
+// testing: "/list" shows the list
+app.router.get('/list', function(user, repo) {
   
   var http = this;
   
@@ -44,6 +44,16 @@ app.router.get('/wiki', function(user, repo) {
   app.listHub(user, repo, function(err, res) {
     http.res.html((err || res || null).toString());
   });
+
+});
+
+
+
+// "/wiki" shows the rendered readme
+app.router.get('/wiki', function(user, repo) {
+  
+  // hardcoded
+  app.getHub("eins78", "txt.178.is", null, this);  
 
 });
 
