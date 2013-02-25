@@ -52,13 +52,13 @@ app.router.get('/wiki/:page', function (page) {
 
 // experimental public service ///////////////////////
 
-// "/github/$user/$repo" shows the rendered readme
-app.router.get('/github/:user/:repo', function (user, repo) {
-  app.getHub(user, repo, null, this);
+// "/ext/github/$user/$repo" shows the rendered readme + page listing
+app.router.get('/ext/github/:user/:repo', function (user, repo) {
+  app.wikiHome(user, repo, this);
 });
 
-// "/github/$user/$repo/$PAGE" shows a rendered wiki page
-app.router.get('/github/:user/:repo/:page', function (user, repo, page) {
+// "/ext/github/$user/$repo/$PAGE" shows a rendered wiki page
+app.router.get('/ext/github/:user/:repo/:page', function (user, repo, page) {
   app.getHub(user, repo, page, this);
 });
 
