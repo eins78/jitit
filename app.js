@@ -24,7 +24,12 @@ app.use(require("./lib/helpers"));
 app.use(flatiron.plugins.http);
 
 app.router.get('/', function () {
-  this.res.html(app.cache.infopage.html)
+  var http = this;
+  
+  app.cache.get("infopage", function(info) {
+    require('eyes').inspect(info);
+    http.res.html(info.html)    
+  });
 });
 
 // ROUTES ////////////////////////////////////////////
@@ -32,8 +37,13 @@ app.router.get('/', function () {
 // "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
   
+  var http = this;
+  
   // hardcoded
-  app.getHub("eins78", "txt.178.is", null, this);
+  // app.getHub("eins78", "txt.178.is", null, this);
+  app.github.list(null, function(err, res) {
+    http.res.html((err || res || null).toString());
+  });
 
 });
 
