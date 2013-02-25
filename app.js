@@ -27,7 +27,6 @@ app.router.get('/', function () {
   var http = this;
   
   app.cache.get("infopage", function(info) {
-    require('eyes').inspect(info);
     http.res.html(info.html);   
   });
 });
@@ -40,8 +39,9 @@ app.router.get('/wiki', function(user, repo) {
   var http = this;
   
   // hardcoded
-  // app.getHub("eins78", "txt.178.is", null, this);
-  app.github.list(null, function(err, res) {
+  user = "eins78";
+  
+  app.listHub(user, repo, function(err, res) {
     http.res.html((err || res || null).toString());
   });
 
