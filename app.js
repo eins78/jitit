@@ -33,27 +33,12 @@ app.router.get('/', function () {
 
 // ROUTES ////////////////////////////////////////////
 
-// testing: "/list" shows the list
-app.router.get('/list', function(user, repo) {
-  
-  var http = this;
-  
-  // hardcoded
-  user = "eins78";
-  
-  app.listHub(user, repo, "Pages", function(err, res) {
-    http.res.html((err || res || null).toString());
-  });
-
-});
-
-
 
 // "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
   
-  // hardcoded
-  app.getHub("eins78", "txt.178.is", null, this);  
+  //          (user, repo, sender) 
+  app.wikiHome("eins78", "txt.178.is", this);
 
 });
 
