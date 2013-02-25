@@ -35,19 +35,13 @@ app.router.get('/', function () {
 
 // testing: "/list" shows the list
 app.router.get('/list', function(user, repo) {
-  
   var http = this;
   
-  // hardcoded
-  user = "eins78";
-  
-  app.listHub(user, repo, function(err, res) {
+  app.listHub(null, null, function(err, res) {
     http.res.html((err || res || null).toString());
   });
 
 });
-
-
 
 // "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
