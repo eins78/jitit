@@ -1,14 +1,7 @@
 var path      = require('path'),
     fs        = require('fs'),
     flatiron  = require('flatiron'),
-    app       = flatiron.app,
-    GitHubApi = require('github'),
-    github = new GitHubApi({
-        // required
-        version: "3.0.0",
-        // optional
-        timeout: 5000
-    });
+    app       = flatiron.app;
 
 // APP CONF + PLUGINS
 app.config.file({ file: path.join(__dirname, 'config', 'config.json') });
@@ -27,179 +20,45 @@ app.use(require("./lib/helpers"));
 
 
 
-// HTTP //////////////////////////////////////////////
+// HTTP 
 app.use(flatiron.plugins.http);
 
 app.router.get('/', function () {
   this.res.html(app.cache.infopage.html)
 });
 
+// ROUTES ////////////////////////////////////////////
+
 // "/wiki" shows the rendered readme
 app.router.get('/wiki', function(user, repo) {
-  var self = this,
-      conf;
   
   // hardcoded
-  conf = { 
-    "user": "eins78",
-    "repo": "txt.178.is",
-    "readme": true
-  };
-  
-  app.github.fetch(conf, function(err, result) {
-    
-    if (err) {
-      
-      app.send(err, null, self);
-      
-    } else {
-                
-      app.txt(result, 'markdown', 'html', function(err, output) {
-           
-        app.send(err, output, self);
-      
-      });
-    
-    }
-    
-  });
-  
+  app.getHub("eins78", "txt.178.is", null, this);
+
 });
 
-// "/wiki/$PAGE" shows a rendered wiki page
+// "/wiki/$PAGE" shows a rendered wiki page from 178
 app.router.get('/wiki/:page', function (page) {
-  var self = this,
-      conf ;
-  
+
   // hardcoded
-  conf = { 
-    "user": "eins78",
-    "repo": "txt.178.is",
-    "path": page + ".page"
-  };
-  
-  app.github.fetch(conf, function(err, result) {
-    
-    if (err) {
-      
-      app.send(err, null, self);
-      
-    } else {
-                
-      app.txt(result, 'markdown', 'html', function(err, output) {
-           
-        app.send(err, output, self);
-      
-      });
-    
-    }
-    
-  });
+  app.getHub("eins78", "txt.178.is", page + ".page", this);
   
 });
 
-// test a public service
-// "/github/$user/$repo/$PAGE" shows a rendered wiki page
-app.router.get('/github/:user/:repo/:page', function (user, repo, page) {
-  var self = this,
-      conf ;
-  
-  pagefile = path.join('.', 'content', page + ".markdown");
-  
-  // for when not hard-coded    
-
-  conf = { 
-    "user": user,
-    "repo": repo,
-    "path": page + ".page"
-  };
-  
-  app.github.fetch(conf, function(err, result) {
-    
-    if (err) {
-      
-      app.send(err, null, self);
-      
-    } else {
-                
-      app.txt(result, 'markdown', 'html', function(err, output) {
-        
-        app.send(err, output, self);
-              
-      });
-    
-    }
-    
-  });
-  
-});
+// experimental public service ///////////////////////
 
 // "/github/$user/$repo" shows the rendered readme
-app.router.get('/github/:user/:repo', function(user, repo) {
-  var self = this,
-      conf = { 
-        "user": user,
-        "repo": repo,
-        "readme": true
-      };
-  
-  app.github.fetch(conf, function(err, result) {
-    
-    if (err) {
-      
-      app.send(err, null, self);
-      
-    } else {
-                
-      app.txt(result, 'markdown', 'html', function(err, output) {
-        
-        app.send(err, output, self);
-        
-      });
-    
-    }
-    
-  });
-  
+app.router.get('/github/:user/:repo', function (user, repo) {
+  app.getHub(user, repo, null, this);
 });
 
-
-
-// "/wiki/$PAGE/$format" returns a rendered wiki page
-app.router.get('/wiki/:page/export', function (page) {
-  var self = this,
-      conf ;
-    
-  console.log("export!");
-  
-  // hardcoded
-  conf = { 
-    "user": "eins78",
-    "repo": "txt.178.is",
-    "path": page + ".page"
-  };
-  
-  var format = self.req.query.format || 'html';
-  
-  app.github.fetch(conf, function(err, result) {
-    
-    if (err) {
-      
-      app.send(err, null, self);
-      
-    } else {
-                
-      app.txt(result, 'markdown', format, function(err, output) {
-        console.log(err); 
-        app.send(err || null, output, self);
-      
-      });
-    
-    }
-    
-  });
-  
+// "/github/$user/$repo/$PAGE" shows a rendered wiki page
+app.router.get('/github/:user/:repo/:page', function (user, repo, page) {
+  app.getHub(user, repo, page, this);
 });
+
+// end experimental public service ///////////////////
+
 
 // start the app
 app.start(3000);
